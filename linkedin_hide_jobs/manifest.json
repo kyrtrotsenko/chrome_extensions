@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
   "name": "LinkedIn Jobs Cleaner",
-  "version": "1.0",
-  "description": "Hides promoted and dismissed job listings on LinkedIn Jobs search.",
-  "permissions": ["scripting"],
+  "version": "2.0",
+  "description": "Hides job listings on LinkedIn containing user-specified strings.",
+  "permissions": ["storage", "scripting"],
   "host_permissions": [
     "https://www.linkedin.com/jobs/search/*"
   ],
-  "background": {
-    "service_worker": "background.js"
+  "action": {
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {

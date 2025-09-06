@@ -1,19 +1,26 @@
-function hideUnwantedJobs() {
+function hideUnwantedJobs(excludeStrings) {
   const listItems = document.querySelectorAll('li');
   for (let i = listItems.length - 1; i >= 0; i--) {
     const li = listItems[i];
-    if (
-      li.textContent.includes('Promoted') ||
-      li.textContent.includes('We won’t show you this job again.')
-    ) {
-      li.style.display = 'none';
+    for (const exclude of excludeStrings) {
+      if (exclude && li.textContent.includes(exclude)) {
+        li.style.display = 'none';
+        break;
+      }
     }
   }
 }
 
-// Run once when the page is loaded
-hideUnwantedJobs();
+function runFilter() {
+  chrome.storage.sync.get(['excludeStrings'], function (data) {
+    const excludeStrings = data.excludeStrings || [];
+    hideUnwantedJobs(excludeStrings);
+  });
+}
 
-// Optional: Run again if the page is dynamically updated (LinkedIn uses React, so jobs may appear after initial load)
-const observer = new MutationObserver(hideUnwantedJobs);
+// Initial run
+runFilter();
+
+// Observe DOM changes (for dynamic content)
+const observer = new MutationObserver(runFilter);
 observer.observe(document.body, { childList: true, subtree: true });
